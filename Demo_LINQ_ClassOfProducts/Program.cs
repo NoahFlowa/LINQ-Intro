@@ -28,6 +28,14 @@ namespace Demo_LINQ_ClassOfProducts
 
             OrderByCatagoryAnoymous(productList);
 
+            OrderByUnits(productList);
+
+            OrderByPrice(productList);
+
+            OrderByName(productList);
+
+            NoahsQuery(productList);
+
             //
             // Write the following methods
             //
@@ -45,6 +53,117 @@ namespace Demo_LINQ_ClassOfProducts
             // Query: Student Choice - Minimum of one per team member
         }
 
+        /// <summary>
+        /// Order products by inventory with less than 10 units in stock
+        /// </summary>
+        /// <param name="products"></param>
+        private static void OrderByUnits(List<Product> products)
+        {
+            string TAB = "   ";
+
+            Console.Clear();
+            Console.WriteLine(TAB + "List the names and units of all priducts with less than 10 units in stock.");
+            Console.WriteLine();
+
+            var sortedProducts = products.Where(p => p.UnitsInStock < 10).OrderBy(p => p.UnitsInStock).Select(p => new {
+                Name = p.ProductName,
+                Inventory = p.UnitsInStock
+            });
+
+            Console.WriteLine(TAB + "Product Name".PadRight(40) + "Amount in Stock".PadLeft(15));
+            Console.WriteLine(TAB + "------------".PadRight(40) + "-------------".PadLeft(15));
+
+            foreach (var product in sortedProducts)
+            {
+                Console.WriteLine(TAB + product.Name.PadRight(40) + product.Inventory.ToString().PadLeft(15));
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Press any key to continue.");
+            Console.ReadKey();
+        }
+
+        /// <summary>
+        /// Orders products by price
+        /// </summary>
+        /// <param name="products"></param>
+        private static void OrderByPrice(List<Product> products)
+        {
+            string TAB = "   ";
+
+            Console.Clear();
+            Console.WriteLine(TAB + "List the products with a unit price of less than $10.");
+            Console.WriteLine();
+
+            var sortedProducts = products.Where(p => p.UnitPrice < 10).OrderBy(p => p.UnitPrice).Select(p => new {
+                Name = p.ProductName,
+                Price = p.UnitPrice
+            });
+
+            Console.WriteLine(TAB + "Product Name".PadRight(40) + "Unit Price".PadLeft(15));
+            Console.WriteLine(TAB + "------------".PadRight(40) + "-------------".PadLeft(15));
+
+            foreach (var product in sortedProducts)
+            {
+                Console.WriteLine(TAB + product.Name.PadRight(40) + product.Price.ToString("C2").PadLeft(15));
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Press any key to continue.");
+            Console.ReadKey();
+        }
+
+        private static void OrderByName(List<Product> products)
+        {
+            string TAB = "   ";
+
+            Console.Clear();
+            Console.WriteLine(TAB + "List the products name that start with S.");
+            Console.WriteLine();
+
+            var sortedProducts = products.Where(p => p.ProductName.Contains("S")).Select(p => new {
+                Name = p.ProductName,
+                Price = p.UnitPrice
+            });
+
+            Console.WriteLine(TAB + "Product Name".PadRight(40) + "Unit Price".PadLeft(15));
+            Console.WriteLine(TAB + "------------".PadRight(40) + "-------------".PadLeft(15));
+
+            foreach (var product in sortedProducts)
+            {
+                Console.WriteLine(TAB + product.Name.PadRight(40) + product.Price.ToString("C2").PadLeft(15));
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Press any key to continue.");
+            Console.ReadKey();
+        }
+
+        private static void NoahsQuery(List<Product> products)
+        {
+            string TAB = "   ";
+
+            Console.Clear();
+            Console.WriteLine(TAB + "Order by product id, descending");
+            Console.WriteLine();
+
+            var sortedProducts = products.OrderBy(p =>p.ProductName).ThenByDescending(p => p.ProductID).Select(p => new {
+                Name = p.ProductName,
+                ID = p.ProductID
+            });
+
+            Console.WriteLine(TAB + "Product Name".PadRight(40) + "Product ID".PadLeft(15));
+            Console.WriteLine(TAB + "------------".PadRight(40) + "-------------".PadLeft(15));
+
+            foreach (var product in sortedProducts)
+            {
+                Console.WriteLine(TAB + product.Name.PadRight(40) + product.ID.ToString().PadLeft(15));
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Press any key to continue.");
+            Console.ReadKey();
+        }
 
         /// <summary>
         /// read all products from an XML file and return as a list of Product
@@ -74,7 +193,10 @@ namespace Demo_LINQ_ClassOfProducts
             return products;
         }
 
-
+        /// <summary>
+        /// Orders products by category
+        /// </summary>
+        /// <param name="products"></param>
         private static void OrderByCatagory(List<Product> products)
         {
             string TAB = "   ";
@@ -110,6 +232,10 @@ namespace Demo_LINQ_ClassOfProducts
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// Orders products by anon category
+        /// </summary>
+        /// <param name="products"></param>
         private static void OrderByCatagoryAnoymous(List<Product> products)
         {
             string TAB = "   ";
