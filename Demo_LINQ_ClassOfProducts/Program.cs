@@ -34,6 +34,12 @@ namespace Demo_LINQ_ClassOfProducts
 
             OrderByName(productList);
 
+            OrderByTotalValue(productList);
+
+            FindExpensive(productList);
+
+            JasonsQuery(productList);
+
             NoahsQuery(productList);
 
             //
@@ -51,6 +57,53 @@ namespace Demo_LINQ_ClassOfProducts
             // OrderByName(): List all products with names that start with "S" and calculate the average of the units in stock.
 
             // Query: Student Choice - Minimum of one per team member
+        }
+
+        private static void FindExpensive(List<Product> products)
+        {
+            string TAB = "   ";
+
+            Console.Clear();
+            Console.WriteLine(TAB + "The most expensive seafood(s)!");
+            Console.WriteLine();
+
+            var list = from o in products.Where(a => a.Category == "Seafood").OrderByDescending(a => a.UnitPrice).Take(1).Select(a => a.UnitPrice).Distinct()
+                       from j in products
+                       where o == j.UnitPrice && j.Category == "Seafood"
+                       select new { Name = j.ProductName, Price = j.UnitPrice };
+
+            Console.WriteLine(TAB + "Product Name".PadRight(40) + "Price".PadLeft(15));
+            Console.WriteLine(TAB + "------------".PadRight(40) + "-------------".PadLeft(15));
+
+            foreach (var product in list)
+                Console.WriteLine(TAB + product.Name.PadRight(40) + product.Price.ToString("C2").PadLeft(15));
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Press any key to continue.");
+            Console.ReadKey();
+        }
+
+        private static void OrderByTotalValue(List<Product> products)
+        {
+            string TAB = "   ";
+
+            Console.Clear();
+            Console.WriteLine(TAB + "Condiments with total value in stock!");
+            Console.WriteLine();
+
+            var list = from o in products where o.UnitPrice * o.UnitsInStock > 0 && o.Category == "Condiments" orderby o.UnitPrice * o.UnitsInStock select new { Name = o.ProductName, Stock = Math.Round(o.UnitPrice * o.UnitsInStock) };
+
+            Console.WriteLine(TAB + "Product Name".PadRight(40) + "Amount in Stock".PadLeft(15));
+            Console.WriteLine(TAB + "------------".PadRight(40) + "-------------".PadLeft(15));
+
+            foreach (var product in list)
+            {
+                Console.WriteLine(TAB + product.Name.PadRight(40) + product.Stock.ToString().PadLeft(15));
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Press any key to continue.");
+            Console.ReadKey();
         }
 
         /// <summary>
@@ -139,15 +192,37 @@ namespace Demo_LINQ_ClassOfProducts
             Console.ReadKey();
         }
 
+        private static void JasonsQuery(List<Product> products)
+        {
+            string TAB = "   ";
+
+            Console.Clear();
+            Console.WriteLine(TAB + "Group by most expensive. (Jason's Query)");
+            Console.WriteLine();
+
+            var list = from o in products.OrderByDescending(a => a.UnitPrice).GroupBy(s => s.Category).Select(a => a.First()).Distinct()
+                       select new { Name = o.ProductName, Price = o.UnitPrice, Catagory = o.Category };
+
+            Console.WriteLine(TAB + "Product Name".PadRight(40) + "Catagory".PadRight(40) + "Price".PadLeft(15));
+            Console.WriteLine(TAB + "------------".PadRight(40) + "------------".PadRight(40) + "-------------".PadLeft(15));
+
+            foreach (var product in list)
+                Console.WriteLine(TAB + product.Name.PadRight(40) + product.Catagory.PadRight(40) + product.Price.ToString("C2").PadLeft(15));
+
+            Console.WriteLine();
+            Console.WriteLine(TAB + "Press any key to continue.");
+            Console.ReadKey();
+        }
+
         private static void NoahsQuery(List<Product> products)
         {
             string TAB = "   ";
 
             Console.Clear();
-            Console.WriteLine(TAB + "Order by product id, descending");
+            Console.WriteLine(TAB + "Order by product id, descending.");
             Console.WriteLine();
 
-            var sortedProducts = products.OrderBy(p =>p.ProductName).ThenByDescending(p => p.ProductID).Select(p => new {
+            var sortedProducts = products.OrderByDescending(p => p.ProductID).Select(p => new {
                 Name = p.ProductName,
                 ID = p.ProductID
             });
